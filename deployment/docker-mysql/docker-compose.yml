@@ -1,0 +1,20 @@
+services:
+  db:
+    image: mysql:9.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: "videohub"
+      MYSQL_USER: "niharika" # NO permission. Need to grant required permissions
+      MYSQL_PASSWORD: "pwniharika"
+      MYSQL_ROOT_PASSWORD: "niharika" # username: root
+    ports:
+      - "3306:3306" # for tcp protocol
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - mota-network
+
+networks:
+  mota-network:
+    driver: bridge
+# https://hub.docker.com/_/mysql

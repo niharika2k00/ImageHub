@@ -1,0 +1,29 @@
+server:
+  port: 4040
+
+spring:
+  application:
+    name: Spring Boot Java Project
+  main:
+    banner-mode: off
+  datasource:
+    url: "jdbc:mysql://localhost:3306/videohub" # JDBC URL of the database
+    username: "root" # username and password for Database
+    password: "niharika"
+  jpa:
+    hibernate:
+    #  ddl-auto: update
+#  security:
+#    user: # for endpoint security
+#      name: Harry
+#      password: hello123
+
+
+# Reduce logging level
+logging:
+  level:
+    root: warn # log only warning and error
+
+
+
+# default username: user with the below generated password
