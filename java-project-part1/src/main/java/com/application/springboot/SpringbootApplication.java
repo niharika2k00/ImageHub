@@ -3,18 +3,17 @@ package com.application.springboot;
 import com.application.springboot.entity.Role;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-//@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-//@ComponentScan("com.application")
-@ComponentScan(basePackages = {"com.application.springboot", "com.application.sharedlibrary"})
-//@Configuration
-//@EntityScan("com.application")
+@ComponentScan("com.application")
+@EnableJpaRepositories("com.application")
+@EntityScan("com.application")
 public class SpringbootApplication {
 
   public static void main(String[] args) {
