@@ -10,7 +10,7 @@ services:
     ports:
       - "3306:3306" # for tcp protocol
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./.mysql-data:/var/lib/mysql
     networks:
       - mota-network
 

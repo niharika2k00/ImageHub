@@ -8,8 +8,8 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - ./zookeeper/data:/var/lib/zookeeper/data
-      - ./zookeeper/logs:/var/lib/zookeeper/log
+      - ./.zookeeper-data/data:/var/lib/zookeeper/data
+      - ./.zookeeper-data/logs:/var/lib/zookeeper/log
 
   # kafka broker
   kafka:
@@ -36,7 +36,7 @@ services:
     depends_on:
       - zookeeper
     volumes:
-      - ./kafka/data:/var/lib/kafka/data
+      - ./.kafka-data/data:/var/lib/kafka/data
 
   topic-init:
     image: confluentinc/cp-kafka:latest
