@@ -34,4 +34,27 @@ multiple kafka server or broker - CLUSTER
 
 
 - CLUSTERED INDEX
-- 
+-
+
+If you use the @OneToMany annotation with @JoinColumn, then you have a
+unidirectional association
+
+Explanation of Changes:
+Bidirectional Relationship:
+
+The Image entity uses mappedBy to indicate that the ImageVariant entity owns the
+relationship.
+Correct @JoinColumn:
+
+The ImageVariant entity correctly maps the foreign key image_id to the primary
+key id in the Image entity.
+Composite Key:
+
+The ImageVariantId class ensures the composite key (imageId, width, height) is
+handled correctly.
+
+Changes:
+
+- Removed @JoinColumn in Image and replaced it with mappedBy = "image" to
+  establish bidirectional mapping.
+- The ImageVariant entity should now control the foreign key relationship.

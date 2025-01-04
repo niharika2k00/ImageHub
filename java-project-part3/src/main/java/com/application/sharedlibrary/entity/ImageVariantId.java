@@ -1,5 +1,6 @@
 package com.application.sharedlibrary.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public class ImageVariantId implements Serializable {
   private int width;
   private int height;
+  @Column(name = "image_id")
   private int imageId;
 
   public ImageVariantId() {

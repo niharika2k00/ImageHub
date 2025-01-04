@@ -3,7 +3,7 @@ services:
     image: mysql:9.0
     restart: always
     environment:
-      MYSQL_DATABASE: "videohub"
+      MYSQL_DATABASE: "imagehub"
       MYSQL_USER: "niharika" # NO permission. Need to grant required permissions
       MYSQL_PASSWORD: "pwniharika"
       MYSQL_ROOT_PASSWORD: "niharika" # username: root

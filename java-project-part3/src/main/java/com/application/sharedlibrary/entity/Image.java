@@ -30,7 +30,7 @@ public class Image {
   private String uploadedAt;
 
   @OneToMany(mappedBy = "image", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "id", referencedColumnName = "image_id")
+  //@JoinColumn(name = "id", referencedColumnName = "image_id")
   private Set<ImageVariant> imageVariantList;
 
   public Set<ImageVariant> getImageVariantList() {

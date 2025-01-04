@@ -11,7 +11,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: "jdbc:mysql://localhost:3306/videohub" # JDBC URL of the database
+    url: "jdbc:mysql://localhost:3306/imagehub" # JDBC URL of the database
     username: "root" # username and password for Database
     password: "niharika"
   jpa:

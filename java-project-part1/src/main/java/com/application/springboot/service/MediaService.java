@@ -39,29 +39,25 @@ public class MediaService {
     User userDetails = userService.findByEmail(email);
 
     Image image = new Image();
-    //image.setCategory(reqBody.getCategory());
-    //image.setDescription(reqBody.getDescription());
-    //image.setTitle(reqBody.getTitle());
     image.setAuthorId(userDetails.getId());
     image.setUploadedAt(formattedDateTime);
 
     BeanUtils.copyProperties(reqBody, image); // (source, target)
-    System.out.println(image);
+    imageService.saveOrUpdate(image);
 
     // convert byte array to Base64 encoded string
     String base64EncodedString = Base64.getEncoder().encodeToString(originalImgByteArr);
     //String base64EncodedString = (String) jsonObj.get("encodedString");
     //byte[] originalImgByteArr = Base64.getDecoder().decode(base64EncodedString);
 
+    System.out.println(image);
     JSONObject jsonObj = new JSONObject();
     jsonObj.put("message", "Image with id " + image.getId() + " is published to kafka for further processing");
     jsonObj.put("id", image.getId());
     jsonObj.put("originalImagePath", originalImagePath);
     //jsonObj.put("encodedString", base64EncodedString);
 
-    imageService.saveOrUpdate(image);
     kafkaProducerService.sendMsgToTopic(jsonObj.toJSONString()); // convert JSONObject to JSON string
-
   }
 }
 

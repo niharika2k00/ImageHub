@@ -1,7 +1,7 @@
 package com.application.springboot.service;
 
-import com.application.sharedlibrary.entity.Image;
 import com.application.sharedlibrary.entity.ImageVariant;
+import com.application.sharedlibrary.entity.ImageVariantId;
 import com.application.sharedlibrary.service.ImageVariantService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,7 +29,7 @@ public class KafkaConsumerService {
     JSONParser parser = new JSONParser();
     JSONObject jsonObj = (JSONObject) parser.parse(payload);
 
-    int id = (int) jsonObj.get("id");
+    int id = ((Number) jsonObj.get("id")).intValue(); // while storing(put) int is autoboxed into an Integer. And JSONObject treats int as long so need to cast to int
     String message = (String) jsonObj.get("message");
     String filePath = (String) jsonObj.get("originalImagePath");
 
@@ -39,26 +39,22 @@ public class KafkaConsumerService {
     String resolution = width + "x" + height;
     System.out.println("Resized " + resolution + " image stored in path: " + resizedImagePath);
 
+    ImageVariantId variantId = new ImageVariantId(width, height, id);
     ImageVariant variant = new ImageVariant();
-    Image image = new Image();
 
     // JPA does not treat it as a new entity to be persisted, rather treats it as an existing row in the Image table
-    image.setId(id);
+    //Image image = new Image();
+    //image.setId(id);
+    //variant.setImage(image);
 
-    variant.setImage(image);
+    variant.setId(variantId);
     variant.setWidth(width);
     variant.setHeight(height);
     variant.setFilePath(resizedImagePath);
 
     imageVariantService.saveOrUpdate(variant);
+    System.out.println("Resized image now inserted successfully.");
 
-    //resizedImages.forEach((resolution, savedImagePath) -> {
-    //  System.out.println("Resolution: " + resolution);
-    //  System.out.println("Stored image path: " + savedImagePath);
-    //
-    //  // send message via kafka producer 2
-    //  //kafkaTemplate.send("testtopic2", resolution);
-    //});
   }
 
   // Listener with 2 consumer that handlers 128px image resolution
