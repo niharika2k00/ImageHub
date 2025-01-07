@@ -15,6 +15,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
   @Bean
+  //https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html
   public Map<String, Object> consumerConfigs() {
     Map<String, Object> props = new HashMap<>();
 
@@ -23,7 +24,7 @@ public class KafkaConsumerConfig {
 
     props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "20000000"); // 20 MB
-    props.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
+    //props.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "20000000");
     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);

@@ -3,6 +3,7 @@ USE `imagehub`;
 
 DROP TABLE IF EXISTS <table_name>;
 SHOW COLUMNS FROM <table_name>;
+DESCRIBE <table_name>;
 
 -- create new table
 CREATE TABLE `user` (

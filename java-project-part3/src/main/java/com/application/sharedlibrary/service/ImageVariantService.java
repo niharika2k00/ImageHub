@@ -20,4 +20,7 @@ public class ImageVariantService {
     return imageVariantRepository.save(image);
   }
 
+  public int getCountByImageId(int id) {
+    return imageVariantRepository.getCountByImageId(id);
+  }
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
   @Bean
+  //https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/producer/ProducerConfig.html
   public Map<String, Object> producerConfigs() {
     Map<String, Object> props = new HashMap<>();
 

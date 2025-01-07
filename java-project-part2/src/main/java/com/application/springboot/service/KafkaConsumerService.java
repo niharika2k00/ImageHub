@@ -15,12 +15,14 @@ public class KafkaConsumerService {
 
   private final ImageResizeService imageResizeService;
   private final ImageVariantService imageVariantService;
+  private final EmailSenderService emailSenderService;
   private final KafkaTemplate<String, String> kafkaTemplate;
 
   @Autowired
-  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate) {
+  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, EmailSenderService emailSenderService, KafkaTemplate<String, String> kafkaTemplate) {
     this.imageResizeService = imageResizeService;
     this.imageVariantService = imageVariantService;
+    this.emailSenderService = emailSenderService;
     this.kafkaTemplate = kafkaTemplate;
   }
 
@@ -42,11 +44,6 @@ public class KafkaConsumerService {
     ImageVariantId variantId = new ImageVariantId(width, height, id);
     ImageVariant variant = new ImageVariant();
 
-    // JPA does not treat it as a new entity to be persisted, rather treats it as an existing row in the Image table
-    //Image image = new Image();
-    //image.setId(id);
-    //variant.setImage(image);
-
     variant.setId(variantId);
     variant.setWidth(width);
     variant.setHeight(height);
@@ -55,37 +52,28 @@ public class KafkaConsumerService {
     imageVariantService.saveOrUpdate(variant);
     System.out.println("Resized image now inserted successfully.");
 
+    System.out.println("QUERY RESPONSE: " + imageVariantService.getCountByImageId(id));
+    if (imageVariantService.getCountByImageId(id) == 3) {
+      System.out.println("SEND MAIL");
+      emailSenderService.sendEmail();
+    }
   }
 
-  // Listener with 2 consumer that handlers 128px image resolution
-  @KafkaListener(topics = "testtopic", groupId = "group1", concurrency = "2")
-  public void listenToTopic1(String payload) throws Exception {
+  String kafkaConsumerGroupId = System.getProperty("GROUP_ID");
+
+  // Here a single Kafka topic is configured with 3 consumer groups, each containing multiple(x) consumers. Each group is responsible for handling a specific image resolution for resizing.
+
+  // Listener with 2 consumer that handle 128 | 512 | 1024 px image resolution
+  // @ConditionalOnProperty annotation helps to enable/disable listeners based on the value of environment variable dynamically https://docs.spring.io/spring-boot/api/java/org/springframework/boot/autoconfigure/condition/ConditionalOnProperty.html#matchIfMissing--
+  //@ConditionalOnProperty(name = "${GROUP_ID}", havingValue = "group1")
+  @KafkaListener(topics = "testtopic", groupId = "${GROUP_ID}", concurrency = "2")
+  public void listenToTopic(String payload) throws Exception {
     String targetWidth = System.getProperty("WIDTH");
     String targetHeight = System.getProperty("HEIGHT");
-    System.out.println("targetWidth:" + targetWidth);
+    System.out.println("Method listenToTopic triggered for consumer group -> " + kafkaConsumerGroupId);
     // env variables are operating-system-level key/value pairs set globally outside of JVM. In IntelliJ these are set in the environment variable section in edit configuration
     //targetWidth = System.getenv("WIDTH");
 
     helper(payload, Integer.parseInt(targetWidth), Integer.parseInt(targetHeight));
   }
-
-  // Listener with 2 consumer that handlers 512px image resolution
-  //@KafkaListener(topics = "testtopic", groupId = "group2", concurrency = "2")
-  //public void listenToTopic2(String payload) throws Exception {
-  //  int width = System.getenv(width);
-  //  int targetHeight = System.getenv(height);
-  //
-  //  helper(payload, width, height);
-  //
-  //}
-
-  //// Listener with 2 consumer that handlers 1024px image resolution
-  //@KafkaListener(topics = "testtopic", groupId = "group3", concurrency = "2")
-  //public void listenToTopic3(String payload) throws Exception {
-  //  int width = System.getenv(width);
-  //  int height = System.getenv(height);
-  //
-  //  helper(payload, width, height);
-  //
-  //}
 }
