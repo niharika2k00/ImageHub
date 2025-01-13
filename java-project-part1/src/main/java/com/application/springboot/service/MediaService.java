@@ -4,7 +4,7 @@ import com.application.sharedlibrary.entity.Image;
 import com.application.sharedlibrary.service.ImageService;
 import com.application.springboot.dto.MediaUploadRequestDto;
 import com.application.springboot.entity.User;
-import com.application.springboot.utility.UserDetailsUtils;
+import com.application.springboot.utility.AuthenticatedUserLogger;
 import org.json.simple.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +17,16 @@ import java.util.Base64;
 @Service
 public class MediaService {
 
-  private final UserDetailsUtils userDetailsUtils;
+  private final AuthenticatedUserLogger authenticatedUserLogger;
   private final UserService userService;
   private final KafkaProducerService kafkaProducerService;
   private final ImageService imageService;
 
   @Autowired
-  public MediaService(KafkaProducerService kafkaProducerService, UserDetailsUtils userDetailsUtils, UserService userService, ImageService imageService) {
+  public MediaService(KafkaProducerService kafkaProducerService, AuthenticatedUserLogger authenticatedUserLogger, UserService userService, ImageService imageService) {
     this.imageService = imageService;
     this.kafkaProducerService = kafkaProducerService;
-    this.userDetailsUtils = userDetailsUtils;
+    this.authenticatedUserLogger = authenticatedUserLogger;
     this.userService = userService;
   }
 
@@ -35,7 +35,7 @@ public class MediaService {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy hh:mm:ss a");
     String formattedDateTime = now.format(formatter);
 
-    String email = userDetailsUtils.getLoggedInUsername();
+    String email = authenticatedUserLogger.getLoggedInUsername();
     User userDetails = userService.findByEmail(email);
 
     Image image = new Image();

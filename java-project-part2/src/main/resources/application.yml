@@ -25,6 +25,11 @@ logging:
   level:
     root: warn # log only warning and error
 
+# Custom environment variables
+custom:
+  env:
+    imageResolutionCount: 3
+
 
 
 # default username: user with the below generated password

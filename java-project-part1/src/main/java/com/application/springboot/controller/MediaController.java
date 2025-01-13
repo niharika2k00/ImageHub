@@ -2,7 +2,6 @@ package com.application.springboot.controller;
 
 import com.application.springboot.dto.MediaUploadRequestDto;
 import com.application.springboot.service.MediaService;
-import com.application.springboot.utility.UserDetailsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +20,10 @@ import java.util.Random;
 public class MediaController {
 
   private final MediaService mediaService;
-  private final UserDetailsUtils userDetailsUtils;
 
   @Autowired
-  public MediaController(MediaService mediaService, UserDetailsUtils userDetailsUtils) {
+  public MediaController(MediaService mediaService) {
     this.mediaService = mediaService;
-    this.userDetailsUtils = userDetailsUtils;
   }
 
   @PostMapping("/upload/image")

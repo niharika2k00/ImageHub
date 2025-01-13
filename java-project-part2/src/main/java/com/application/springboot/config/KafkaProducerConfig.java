@@ -15,15 +15,12 @@ import java.util.Map;
 public class KafkaProducerConfig {
   @Bean
   //https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/producer/ProducerConfig.html
-  //https://docs.spring.io/spring-kafka/api/org/springframework/kafka/annotation/KafkaListener.html
   public ProducerFactory<String, String> producerFactory() {
     Map<String, Object> props = new HashMap<>();
 
     // kafka broker address
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
-
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "20000000"); // 20 MB
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
     return new DefaultKafkaProducerFactory<>(props);

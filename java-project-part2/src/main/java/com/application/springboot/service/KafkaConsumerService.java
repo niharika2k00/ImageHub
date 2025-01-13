@@ -6,6 +6,7 @@ import com.application.sharedlibrary.service.ImageVariantService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -15,16 +16,18 @@ public class KafkaConsumerService {
 
   private final ImageResizeService imageResizeService;
   private final ImageVariantService imageVariantService;
-  private final EmailSenderService emailSenderService;
   private final KafkaTemplate<String, String> kafkaTemplate;
 
   @Autowired
-  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, EmailSenderService emailSenderService, KafkaTemplate<String, String> kafkaTemplate) {
+  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate) {
     this.imageResizeService = imageResizeService;
     this.imageVariantService = imageVariantService;
-    this.emailSenderService = emailSenderService;
     this.kafkaTemplate = kafkaTemplate;
   }
+
+  @Value("${custom.env.imageResolutionCount}")
+  private int imageResolutionCount;
+  private int mediaId;
 
   public void helper(String payload, int width, int height) throws Exception {
     // parse JSON string to JSON object
@@ -34,6 +37,7 @@ public class KafkaConsumerService {
     int id = ((Number) jsonObj.get("id")).intValue(); // while storing(put) int is autoboxed into an Integer. And JSONObject treats int as long so need to cast to int
     String message = (String) jsonObj.get("message");
     String filePath = (String) jsonObj.get("originalImagePath");
+    mediaId = id;
 
     System.out.println("Listening from consumer..." + message);
     // process the original image to generate images in various resolution
@@ -51,12 +55,6 @@ public class KafkaConsumerService {
 
     imageVariantService.saveOrUpdate(variant);
     System.out.println("Resized image now inserted successfully.");
-
-    System.out.println("QUERY RESPONSE: " + imageVariantService.getCountByImageId(id));
-    if (imageVariantService.getCountByImageId(id) == 3) {
-      System.out.println("SEND MAIL");
-      emailSenderService.sendEmail();
-    }
   }
 
   String kafkaConsumerGroupId = System.getProperty("GROUP_ID");
@@ -75,5 +73,14 @@ public class KafkaConsumerService {
     //targetWidth = System.getenv("WIDTH");
 
     helper(payload, Integer.parseInt(targetWidth), Integer.parseInt(targetHeight));
+
+    System.out.println("QUERY RESPONSE: " + imageVariantService.getCountByImageId(mediaId));
+    if (imageVariantService.getCountByImageId(mediaId) == imageResolutionCount) {
+      System.out.println("SEND MAIL");
+
+      // producer publishes message to a kafka topic 2 for sending email
+      kafkaTemplate.send("testtopic2", payload);
+      System.out.println("Message published to 2nd topic");
+    }
   }
 }
