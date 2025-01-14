@@ -19,11 +19,9 @@ public class KafkaProducerConfig {
   public ProducerFactory<String, String> producerFactory() {
     Map<String, Object> props = new HashMap<>();
 
-    // kafka broker address
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
-
-    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093"); // kafka broker address
     props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "20000000"); // 20 MB
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
     return new DefaultKafkaProducerFactory<>(props);

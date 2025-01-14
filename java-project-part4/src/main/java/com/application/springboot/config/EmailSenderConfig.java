@@ -35,7 +35,7 @@ public class EmailSenderConfig {
 
 /*
   SMTP Server setup :
-    1. Goto "Manage your google account"
+    1. Goto "Manage your Google Account"
     2. Then "Security" -> "2-Step Verification" -> "App Password"
     3. If "App Password" doesn't exist then search in the search bar
 */

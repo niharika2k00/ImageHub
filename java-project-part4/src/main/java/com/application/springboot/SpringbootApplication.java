@@ -12,6 +12,6 @@ public class SpringbootApplication {
     System.out.println("Project started 👀...This is kafka consumer");
     SpringApplication.run(SpringbootApplication.class, args);
 
-    // config values assigned at runtime once the springboot application starts. Need to use @PostConstruct annotation
+    // values from env assigned at runtime once the springboot application starts. Need to use @PostConstruct annotation.
   }
 }

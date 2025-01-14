@@ -52,9 +52,10 @@ public class MediaService {
 
     System.out.println(image);
     JSONObject jsonObj = new JSONObject();
-    jsonObj.put("message", "Image with id " + image.getId() + " is published to kafka for further processing");
     jsonObj.put("id", image.getId());
+    jsonObj.put("authenticatedUserEmail", email);
     jsonObj.put("originalImagePath", originalImagePath);
+    jsonObj.put("message", "Image with id " + image.getId() + " is published to kafka for further processing");
     //jsonObj.put("encodedString", base64EncodedString);
 
     kafkaProducerService.sendMsgToTopic(jsonObj.toJSONString()); // convert JSONObject to JSON string

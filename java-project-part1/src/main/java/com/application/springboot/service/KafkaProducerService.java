@@ -18,7 +18,7 @@ public class KafkaProducerService {
     String topicName = "testtopic"; // image-processing-topic
     System.out.println("kafka producer sends message to topic: " + topicName);
 
-    // publish message to a kafka topic
+    // publish message to a kafka topic 1
     kafkaTemplate.send(topicName, payload);
   }
 }

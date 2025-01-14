@@ -17,7 +17,7 @@ public class KafkaConsumerService {
 
   @KafkaListener(topics = "testtopic2", groupId = "group1", concurrency = "2", topicPartitions = {@TopicPartition(topic = "testtopic2", partitions = {"0", "1"})})
   public void listenToTopic(String payload) throws Exception {
-    System.out.println("Consumed from producer 2" + payload);
-    emailSenderService.sendEmail();
+    System.out.println("Consumed from producer 2");
+    emailSenderService.sendEmail(payload);
   }
 }
