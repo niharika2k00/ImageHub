@@ -14,8 +14,7 @@ public class ImageVariantId implements Serializable {
   @Column(name = "image_id")
   private int imageId;
 
-  public ImageVariantId() {
-  }
+  public ImageVariantId() {}
 
   public ImageVariantId(int width, int height, int imageId) {
     this.width = width;
@@ -39,16 +38,9 @@ public class ImageVariantId implements Serializable {
     return Objects.hash(width, height, imageId);
   }
 
-  public int getWidth() {
-    return width;
-  }
+  public int getWidth() {return width;}
 
-  public int getHeight() {
-    return height;
-  }
+  public int getHeight() {return height;}
 
-  public int getImageId() {
-    return imageId;
-  }
-
+  public int getImageId() {return imageId;}
 }
