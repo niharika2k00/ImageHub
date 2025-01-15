@@ -1,4 +1,4 @@
-package com.application.springboot.entity;
+package com.application.sharedlibrary.entity;
 
 import jakarta.persistence.*;
 

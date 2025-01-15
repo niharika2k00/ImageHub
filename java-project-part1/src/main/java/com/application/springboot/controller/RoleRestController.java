@@ -1,7 +1,7 @@
 package com.application.springboot.controller;
 
-import com.application.springboot.entity.Role;
-import com.application.springboot.entity.User;
+import com.application.sharedlibrary.entity.Role;
+import com.application.sharedlibrary.entity.User;
 import com.application.springboot.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
 package com.application.springboot.service;
 
 import com.application.sharedlibrary.entity.Image;
+import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.service.ImageService;
 import com.application.springboot.dto.MediaUploadRequestDto;
-import com.application.springboot.entity.User;
 import com.application.springboot.utility.AuthenticatedUserLogger;
 import org.json.simple.JSONObject;
 import org.springframework.beans.BeanUtils;

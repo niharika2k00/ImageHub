@@ -1,8 +1,8 @@
 package com.application.springboot.service;
 
+import com.application.sharedlibrary.entity.Role;
+import com.application.sharedlibrary.entity.User;
 import com.application.springboot.dao.RoleRepository;
-import com.application.springboot.entity.Role;
-import com.application.springboot.entity.User;
 import com.application.springboot.exception.CustomResourceNotFoundException;
 import com.application.springboot.exception.IllegalArgumentException;
 import com.application.springboot.exception.InvalidRequestException;
@@ -47,7 +47,8 @@ public class RoleServiceImplementation implements RoleService {
 
   @Override
   public Role findById(int id) throws InvalidRequestException, IllegalArgumentException {
-    if (id < 0) throw new IllegalArgumentException("Invalid ID. ID must be a non-negative number.");
+    if (id < 0)
+      throw new IllegalArgumentException("Invalid ID. ID must be a non-negative number.");
     Role roleData;
     //roleData = roleRepository.findById(id).get();
     Optional<Role> optionalRole = roleRepository.findById(id);

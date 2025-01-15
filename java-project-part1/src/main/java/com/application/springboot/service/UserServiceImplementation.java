@@ -1,10 +1,10 @@
 package com.application.springboot.service;
 
+import com.application.sharedlibrary.entity.Role;
+import com.application.sharedlibrary.entity.User;
 import com.application.springboot.dao.UserRepository;
 import com.application.springboot.dto.PasswordUpdateRequestDto;
 import com.application.springboot.dto.UserUpdateRequestDto;
-import com.application.springboot.entity.Role;
-import com.application.springboot.entity.User;
 import com.application.springboot.exception.CustomResourceNotFoundException;
 import com.application.springboot.exception.IllegalArgumentException;
 import com.application.springboot.exception.InvalidRequestException;

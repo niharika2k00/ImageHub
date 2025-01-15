@@ -1,6 +1,6 @@
 package com.application.springboot;
 
-import com.application.springboot.entity.Role;
+import com.application.sharedlibrary.entity.Role;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

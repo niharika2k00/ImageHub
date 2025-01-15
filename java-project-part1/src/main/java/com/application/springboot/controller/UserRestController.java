@@ -1,11 +1,11 @@
 package com.application.springboot.controller;
 
+import com.application.sharedlibrary.entity.Role;
+import com.application.sharedlibrary.entity.User;
 import com.application.springboot.dto.LoginRequestDto;
 import com.application.springboot.dto.PasswordUpdateRequestDto;
 import com.application.springboot.dto.UserLoginResponseDto;
 import com.application.springboot.dto.UserUpdateRequestDto;
-import com.application.springboot.entity.Role;
-import com.application.springboot.entity.User;
 import com.application.springboot.exception.CustomResourceNotFoundException;
 import com.application.springboot.service.JwtService;
 import com.application.springboot.service.KafkaProducerService;

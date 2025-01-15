@@ -1,6 +1,6 @@
 package com.application.springboot.dao;
 
-import com.application.springboot.entity.Role;
+import com.application.sharedlibrary.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
