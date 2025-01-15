@@ -28,7 +28,7 @@ logging:
 # Custom environment variables
 custom:
   env:
-    imageResolutionCount: 3
+    targetImageResolutionCount: 3
 
 
 

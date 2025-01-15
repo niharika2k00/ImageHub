@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>com.application</groupId>
-    <artifactId>kafka-consumer</artifactId>
+    <artifactId>pixprocessor-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>consumer</name>
-    <description>Spring Boot Project (kafka consumer)</description>
+    <name>pixprocessor-service</name>
+    <description>Spring Boot Project (pixel processor service)</description>
 
     <properties>
         <java.version>17</java.version>

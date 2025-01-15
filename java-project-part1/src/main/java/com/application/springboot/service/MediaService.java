@@ -55,7 +55,7 @@ public class MediaService {
     jsonObj.put("id", image.getId());
     jsonObj.put("authenticatedUserEmail", email);
     jsonObj.put("originalImagePath", originalImagePath);
-    jsonObj.put("message", "Image with id " + image.getId() + " is published to kafka for further processing");
+    jsonObj.put("message", "Image with ID " + image.getId() + " has been successfully published to kafka for further processing");
     //jsonObj.put("encodedString", base64EncodedString);
 
     kafkaProducerService.sendMsgToTopic(jsonObj.toJSONString()); // convert JSONObject to JSON string
