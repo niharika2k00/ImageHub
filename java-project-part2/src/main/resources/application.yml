@@ -29,7 +29,3 @@ logging:
 custom:
   env:
     targetImageResolutionCount: 3
-
-
-
-# default username: user with the below generated password

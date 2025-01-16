@@ -61,13 +61,8 @@ public class User {
   }
 
   // Add getters and setters. Can be ignored by using Lombok annotations
-  //public int getId() {
-  //  return id;
-  //}
-  //
-  //public void setId(int id) {
-  //  this.id = id;
-  //}
+  //public int getId() {return id;}
+  //public void setId(int id) {this.id = id;}
 
   public Set<Role> getRoles() {
     return roles;
