@@ -1,4 +1,4 @@
-package com.application.springboot.exception;
+package com.application.sharedlibrary.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

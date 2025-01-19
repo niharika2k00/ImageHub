@@ -2,9 +2,8 @@ package com.application.springboot.service;
 
 import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
-import com.application.springboot.exception.CustomResourceNotFoundException;
-import com.application.springboot.exception.IllegalArgumentException;
-import com.application.springboot.exception.InvalidRequestException;
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.exception.InvalidRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

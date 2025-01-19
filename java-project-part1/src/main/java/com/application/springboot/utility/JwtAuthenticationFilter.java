@@ -1,8 +1,8 @@
 package com.application.springboot.utility;
 
+import com.application.sharedlibrary.service.UserService;
 import com.application.springboot.exception.CustomAccessDeniedException;
 import com.application.springboot.service.JwtService;
-import com.application.springboot.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

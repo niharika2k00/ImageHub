@@ -1,4 +1,4 @@
-package com.application.springboot.exception;
+package com.application.sharedlibrary.exception;
 
 public class InvalidRequestException extends Exception {
 

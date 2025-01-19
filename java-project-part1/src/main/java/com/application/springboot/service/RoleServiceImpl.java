@@ -2,10 +2,10 @@ package com.application.springboot.service;
 
 import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.exception.InvalidRequestException;
+import com.application.sharedlibrary.service.UserService;
 import com.application.springboot.dao.RoleRepository;
-import com.application.springboot.exception.CustomResourceNotFoundException;
-import com.application.springboot.exception.IllegalArgumentException;
-import com.application.springboot.exception.InvalidRequestException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,21 +16,23 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class RoleServiceImplementation implements RoleService {
+public class RoleServiceImpl implements RoleService {
 
-  private final RoleRepository roleRepository;
   private final UserService userService;
+  private final UserUpdateService userUpdateService;
+  private final RoleRepository roleRepository;
 
   // use method-injection
   //@Autowired
   //public void setUserService(UserService userservice) {
-  //  this.userService = userservice;
+  //  this.userUpdateService = userservice;
   //}
 
   @Autowired
-  public RoleServiceImplementation(RoleRepository role_repository, UserService user_service) {
-    this.roleRepository = role_repository;
+  public RoleServiceImpl(RoleRepository role_repository, UserService user_service, UserUpdateService user_update_service) {
     this.userService = user_service;
+    this.userUpdateService = user_update_service;
+    this.roleRepository = role_repository;
   }
 
   @Override
@@ -78,12 +80,13 @@ public class RoleServiceImplementation implements RoleService {
 
   @Override
   @Transactional
-  public void deleteById(int id) throws InvalidRequestException, IllegalArgumentException {
+  public void deleteById(int id) throws IllegalArgumentException, InvalidRequestException {
     findById(id);
     roleRepository.deleteById(id);
   }
 
   // array of assigned roles for a specific user
+  @Override
   public User grantRolesToUser(int userId, HashSet<String> assignedRoleList) throws Exception {
     User user = userService.findById(userId);
     Set<Role> roleSet = new HashSet<>();
@@ -102,6 +105,6 @@ public class RoleServiceImplementation implements RoleService {
     }
 
     user.setRoles(roleSet);
-    return userService.saveOrUpdate(user);
+    return userUpdateService.saveOrUpdate(user);
   }
 }

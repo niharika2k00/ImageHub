@@ -3,6 +3,7 @@ package com.application.springboot.service;
 import com.application.sharedlibrary.entity.Image;
 import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.service.ImageService;
+import com.application.sharedlibrary.service.UserService;
 import com.application.springboot.dto.MediaUploadRequestDto;
 import com.application.springboot.utility.AuthenticatedUserLogger;
 import org.json.simple.JSONObject;
@@ -43,7 +44,7 @@ public class MediaService {
     image.setUploadedAt(formattedDateTime);
 
     BeanUtils.copyProperties(reqBody, image); // (source, target)
-    imageService.saveOrUpdate(image);
+    imageService.saveOrUpdate(image); // store in DB
 
     // convert byte array to Base64 encoded string
     String base64EncodedString = Base64.getEncoder().encodeToString(originalImgByteArr);
@@ -53,7 +54,7 @@ public class MediaService {
     System.out.println(image);
     JSONObject jsonObj = new JSONObject();
     jsonObj.put("id", image.getId());
-    jsonObj.put("authenticatedUserEmail", email);
+    jsonObj.put("authenticatedUserId", image.getAuthorId());
     jsonObj.put("originalImagePath", originalImagePath);
     jsonObj.put("message", "Image with ID " + image.getId() + " has been successfully published to kafka for further processing");
     //jsonObj.put("encodedString", base64EncodedString);

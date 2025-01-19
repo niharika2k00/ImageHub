@@ -12,6 +12,7 @@ public class EmailSenderConfig {
 
   @Bean
   public JavaMailSender javaMailSender() {
+    //https://www.baeldung.com/spring-email
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
     // SMTP server configuration

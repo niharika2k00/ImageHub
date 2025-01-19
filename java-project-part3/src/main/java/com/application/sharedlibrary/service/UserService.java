@@ -1,11 +1,8 @@
-package com.application.springboot.service;
+package com.application.sharedlibrary.service;
 
 import com.application.sharedlibrary.entity.User;
-import com.application.springboot.dto.PasswordUpdateRequestDto;
-import com.application.springboot.dto.UserUpdateRequestDto;
-import com.application.springboot.exception.CustomResourceNotFoundException;
-import com.application.springboot.exception.IllegalArgumentException;
-import com.application.springboot.exception.InvalidRequestException;
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.exception.InvalidRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -14,11 +11,6 @@ import java.util.List;
 
 @Service
 public interface UserService extends UserDetailsService {
-  User saveOrUpdate(User user);
-
-  void updateUser(UserUpdateRequestDto requestBody) throws Exception;
-
-  String updatePassword(PasswordUpdateRequestDto requestBody) throws Exception;
 
   List<User> findAll();
 

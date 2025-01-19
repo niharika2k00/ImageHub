@@ -58,3 +58,32 @@ Changes:
 - Removed @JoinColumn in Image and replaced it with mappedBy = "image" to
   establish bidirectional mapping.
 - The ImageVariant entity should now control the foreign key relationship.
+
+Class1 var1 = new Class2();
+means that var1 is a reference variable of type Class1, but it is pointing to an
+object of type Class2.
+This is possible because Class2 is a subclass (or implements an interface) of
+Class1. It represents the concept of polymorphism in Java.
+
+class Animal {
+void makeSound() {
+System.out.println("Some generic sound");
+}
+}
+
+class Dog extends Animal {
+@Override
+void makeSound() {
+System.out.println("Bark");
+}
+}
+
+public class Main {
+public static void main(String[] args) {
+Animal var1 = new Dog(); // Reference type is Animal, object type is Dog
+var1.makeSound(); // Output: Bark (Dog's implementation is used)
+}
+}
+
+When var1.makeSound() is called, the Dog class's implementation of makeSound()
+is executed, not the Animal class's, because the actual object is of type Dog.

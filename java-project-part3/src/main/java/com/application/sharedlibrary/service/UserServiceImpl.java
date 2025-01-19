@@ -1,19 +1,14 @@
-package com.application.springboot.service;
+package com.application.sharedlibrary.service;
 
+import com.application.sharedlibrary.dao.UserRepository;
 import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
-import com.application.springboot.dao.UserRepository;
-import com.application.springboot.dto.PasswordUpdateRequestDto;
-import com.application.springboot.dto.UserUpdateRequestDto;
-import com.application.springboot.exception.CustomResourceNotFoundException;
-import com.application.springboot.exception.IllegalArgumentException;
-import com.application.springboot.exception.InvalidRequestException;
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.exception.InvalidRequestException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,48 +17,13 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class UserServiceImplementation implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
   private final UserRepository userRepository;
 
   @Autowired
-  public UserServiceImplementation(UserRepository user_repository) {
+  public UserServiceImpl(UserRepository user_repository) {
     this.userRepository = user_repository;
-  }
-
-  @Override
-  @Transactional
-  public User saveOrUpdate(User user) {
-    return userRepository.save(user);
-  }
-
-  @Override
-  @Transactional
-  public void updateUser(UserUpdateRequestDto requestBody) throws Exception {
-    User existingUser = findById(requestBody.getId());
-
-    BeanUtils.copyProperties(requestBody, existingUser);
-    saveOrUpdate(existingUser);
-  }
-
-  @Override
-  @Transactional
-  public String updatePassword(PasswordUpdateRequestDto requestBody) throws Exception {
-    User user = findById(requestBody.getId());
-    String oldPassword = user.getPassword(); // hashed
-    String newPassword = requestBody.getPassword(); // plaintext
-    String message;
-
-    if (BCrypt.checkpw(newPassword, oldPassword)) {
-      message = "New password must be different from the current password.";
-    } else {
-      String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
-      user.setPassword(hashedPassword);
-      saveOrUpdate(user);
-      message = "Password updated successfully";
-    }
-
-    return message;
   }
 
   @Override

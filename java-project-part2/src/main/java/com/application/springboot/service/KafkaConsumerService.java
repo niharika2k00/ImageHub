@@ -2,7 +2,12 @@ package com.application.springboot.service;
 
 import com.application.sharedlibrary.entity.ImageVariant;
 import com.application.sharedlibrary.entity.ImageVariantId;
+import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.service.ImageVariantService;
+import com.application.sharedlibrary.service.UserService;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +16,25 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+
 @Service
 public class KafkaConsumerService {
 
   private final ImageResizeService imageResizeService;
   private final ImageVariantService imageVariantService;
   private final KafkaTemplate<String, String> kafkaTemplate;
+  private final UserService userService;
 
   @Autowired
-  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate) {
+  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate, UserService userService) {
     this.imageResizeService = imageResizeService;
     this.imageVariantService = imageVariantService;
     this.kafkaTemplate = kafkaTemplate;
+    this.userService = userService;
   }
 
   @Value("${custom.env.targetImageResolutionCount}")
@@ -52,7 +64,7 @@ public class KafkaConsumerService {
     JSONObject jsonObj = (JSONObject) parser.parse(payload);
 
     int imageId = ((Number) jsonObj.get("id")).intValue(); // while storing(put) int is autoboxed into an Integer. And JSONObject treats int as long so need to cast to int
-    String authenticatedUserEmail = (String) jsonObj.get("authenticatedUserEmail");
+    int authenticatedUserId = ((Number) jsonObj.get("authenticatedUserId")).intValue();
     String filePath = (String) jsonObj.get("originalImagePath");
     String message = (String) jsonObj.get("message");
 
@@ -61,17 +73,36 @@ public class KafkaConsumerService {
 
     int liveCount = imageVariantService.getCountByImageId(imageId); // fetch number of rows with base id
     System.out.println(liveCount + getSuffix(liveCount) + " image successfylly generated.");
+
     // Check if all x resolutions are processed and stored
     if (liveCount == targetImageResolutionCount) {
-      System.out.println("SEND MAIL");
+      Path path = Paths.get("./mail_format.md");
+      String mailBodyMd = Files.readString(path);
+
+      // Parse Markdown to HTML
+      Parser p = Parser.builder().build();
+      Node document = p.parse(mailBodyMd);
+      HtmlRenderer renderer = HtmlRenderer.builder().build();
+      String mailBodyHtml = renderer.render(document);
+
+      User authenticatedUser = new User();
+      authenticatedUser = userService.findById(authenticatedUserId);
+
+      // Replace all placeholders
+      Map<String, String> replacements = Map.of(
+        "{{username}}", authenticatedUser.getName().toUpperCase()
+      );
+      for (Map.Entry<String, String> entry : replacements.entrySet()) {
+        mailBodyHtml = mailBodyHtml.replace(entry.getKey(), entry.getValue());
+      }
 
       JSONObject jsonPayload = new JSONObject();
-      jsonPayload.put("receiverEmail", authenticatedUserEmail);
-      jsonPayload.put("text", "We are pleased to inform you that the image you uploaded has been successfully resized and converted into all the required resolutions. The processed images are now ready for use." + "\n\n" + "Thank you for using our service!");
       jsonPayload.put("subject", "Your Image Has Been Successfully Processed!");
+      jsonPayload.put("body", mailBodyHtml);
+      jsonPayload.put("receiverEmail", authenticatedUser.getEmail());
 
       // producer publishes message to a kafka topic 2 for sending emails
-      System.out.println("Message published to 2nd topic");
+      System.out.println("Message published to 2nd topic...Sending mail...");
       kafkaTemplate.send("testtopic2", jsonPayload.toJSONString());
     }
   }
@@ -115,3 +146,5 @@ public class KafkaConsumerService {
     }
   }
 }
+
+// Welcome to our platform. We are glad to have you on board.

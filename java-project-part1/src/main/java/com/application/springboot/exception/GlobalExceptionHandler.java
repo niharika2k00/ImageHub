@@ -1,5 +1,7 @@
 package com.application.springboot.exception;
 
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.exception.InvalidRequestException;
 import com.application.springboot.dto.ApiErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

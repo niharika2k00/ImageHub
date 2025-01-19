@@ -2,15 +2,16 @@ package com.application.springboot.controller;
 
 import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
+import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
+import com.application.sharedlibrary.service.UserService;
 import com.application.springboot.dto.LoginRequestDto;
 import com.application.springboot.dto.PasswordUpdateRequestDto;
 import com.application.springboot.dto.UserLoginResponseDto;
 import com.application.springboot.dto.UserUpdateRequestDto;
-import com.application.springboot.exception.CustomResourceNotFoundException;
 import com.application.springboot.service.JwtService;
 import com.application.springboot.service.KafkaProducerService;
 import com.application.springboot.service.RoleService;
-import com.application.springboot.service.UserService;
+import com.application.springboot.service.UserUpdateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,15 @@ public class UserRestController {
   private final RoleService roleService;
   private final JwtService jwtService;
   private final KafkaProducerService kafkaProducerService;
+  private final UserUpdateServiceImpl userUpdateServiceImpl;
 
   @Autowired
-  public UserRestController(JwtService jwtservice, RoleService roleservice, UserService userservice, KafkaProducerService kafkaproducerservice) {
+  public UserRestController(JwtService jwtservice, RoleService roleservice, UserService userservice, KafkaProducerService kafkaproducerservice, UserUpdateServiceImpl userUpdateServiceImpl) {
     this.jwtService = jwtservice;
     this.roleService = roleservice;
     this.userService = userservice;
     this.kafkaProducerService = kafkaproducerservice;
+    this.userUpdateServiceImpl = userUpdateServiceImpl;
   }
 
   // for kafka testing
@@ -80,7 +83,7 @@ public class UserRestController {
     Role basicAuthority = roleService.findByRoleName("ROLE_USER");
     user.setRoles(Set.of(basicAuthority));
 
-    User newUserObject = userService.saveOrUpdate(user);
+    User newUserObject = userUpdateServiceImpl.saveOrUpdate(user);
     System.out.println("Success! New user registered. " + newUserObject);
     return newUserObject;
   }
@@ -118,14 +121,14 @@ public class UserRestController {
   // PUT /users - update existing user except password
   @PutMapping("/users")
   public String updateUser(@RequestBody UserUpdateRequestDto updatedUser) throws Exception {
-    userService.updateUser(updatedUser);
+    userUpdateServiceImpl.updateUser(updatedUser);
     return "User updated successfully";
   }
 
   // PUT /users/auth - update user's password
   @PutMapping("/users/auth")
   public String updatePassword(@RequestBody PasswordUpdateRequestDto requestBody) throws Exception {
-    String msg = userService.updatePassword(requestBody);
+    String msg = userUpdateServiceImpl.updatePassword(requestBody);
     return msg;
   }
 
