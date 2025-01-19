@@ -5,9 +5,7 @@ import com.application.sharedlibrary.entity.ImageVariantId;
 import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.service.ImageVariantService;
 import com.application.sharedlibrary.service.UserService;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
+import com.application.sharedlibrary.util.EmailTemplateProcessor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +26,15 @@ public class KafkaConsumerService {
   private final ImageVariantService imageVariantService;
   private final KafkaTemplate<String, String> kafkaTemplate;
   private final UserService userService;
+  private final EmailTemplateProcessor emailTemplateProcessor;
 
   @Autowired
-  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate, UserService userService) {
+  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate, UserService userService, EmailTemplateProcessor emailTemplateProcessor) {
     this.imageResizeService = imageResizeService;
     this.imageVariantService = imageVariantService;
     this.kafkaTemplate = kafkaTemplate;
     this.userService = userService;
+    this.emailTemplateProcessor = emailTemplateProcessor;
   }
 
   @Value("${custom.env.targetImageResolutionCount}")
@@ -76,25 +76,18 @@ public class KafkaConsumerService {
 
     // Check if all x resolutions are processed and stored
     if (liveCount == targetImageResolutionCount) {
-      Path path = Paths.get("./mail_format.md");
-      String mailBodyMd = Files.readString(path);
-
-      // Parse Markdown to HTML
-      Parser p = Parser.builder().build();
-      Node document = p.parse(mailBodyMd);
-      HtmlRenderer renderer = HtmlRenderer.builder().build();
-      String mailBodyHtml = renderer.render(document);
-
       User authenticatedUser = new User();
       authenticatedUser = userService.findById(authenticatedUserId);
 
-      // Replace all placeholders
+      Path path = Paths.get("./image_processed_email.md");
+      String mailBodyMd = Files.readString(path);
+
+      // Mapping placeholders for replacement
       Map<String, String> replacements = Map.of(
         "{{username}}", authenticatedUser.getName().toUpperCase()
       );
-      for (Map.Entry<String, String> entry : replacements.entrySet()) {
-        mailBodyHtml = mailBodyHtml.replace(entry.getKey(), entry.getValue());
-      }
+
+      String mailBodyHtml = emailTemplateProcessor.processContent(mailBodyMd, replacements);
 
       JSONObject jsonPayload = new JSONObject();
       jsonPayload.put("subject", "Your Image Has Been Successfully Processed!");
@@ -146,5 +139,3 @@ public class KafkaConsumerService {
     }
   }
 }
-
-// Welcome to our platform. We are glad to have you on board.

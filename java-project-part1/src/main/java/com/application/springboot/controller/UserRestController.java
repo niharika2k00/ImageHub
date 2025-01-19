@@ -4,6 +4,7 @@ import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
 import com.application.sharedlibrary.service.UserService;
+import com.application.sharedlibrary.util.EmailTemplateProcessor;
 import com.application.springboot.dto.LoginRequestDto;
 import com.application.springboot.dto.PasswordUpdateRequestDto;
 import com.application.springboot.dto.UserLoginResponseDto;
@@ -12,11 +13,17 @@ import com.application.springboot.service.JwtService;
 import com.application.springboot.service.KafkaProducerService;
 import com.application.springboot.service.RoleService;
 import com.application.springboot.service.UserUpdateServiceImpl;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,14 +37,18 @@ public class UserRestController {
   private final JwtService jwtService;
   private final KafkaProducerService kafkaProducerService;
   private final UserUpdateServiceImpl userUpdateServiceImpl;
+  private final KafkaTemplate<String, String> kafkaTemplate;
+  private final EmailTemplateProcessor emailTemplateProcessor;
 
   @Autowired
-  public UserRestController(JwtService jwtservice, RoleService roleservice, UserService userservice, KafkaProducerService kafkaproducerservice, UserUpdateServiceImpl userUpdateServiceImpl) {
-    this.jwtService = jwtservice;
-    this.roleService = roleservice;
-    this.userService = userservice;
-    this.kafkaProducerService = kafkaproducerservice;
+  public UserRestController(UserService userService, RoleService roleService, JwtService jwtService, KafkaProducerService kafkaProducerService, UserUpdateServiceImpl userUpdateServiceImpl, KafkaTemplate<String, String> kafkaTemplate, EmailTemplateProcessor emailTemplateProcessor) {
+    this.userService = userService;
+    this.roleService = roleService;
+    this.jwtService = jwtService;
+    this.kafkaProducerService = kafkaProducerService;
     this.userUpdateServiceImpl = userUpdateServiceImpl;
+    this.kafkaTemplate = kafkaTemplate;
+    this.emailTemplateProcessor = emailTemplateProcessor;
   }
 
   // for kafka testing
@@ -83,8 +94,27 @@ public class UserRestController {
     Role basicAuthority = roleService.findByRoleName("ROLE_USER");
     user.setRoles(Set.of(basicAuthority));
 
+    // Save user object to DB
     User newUserObject = userUpdateServiceImpl.saveOrUpdate(user);
     System.out.println("Success! New user registered. " + newUserObject);
+
+    // Sending email
+    Path path = Paths.get("./user_welcome_email.md");
+    String mailBodyMd = Files.readString(path);
+
+    // Mapping placeholders for replacement
+    Map<String, String> replacements = Map.of(
+      "{{username}}", newUserObject.getName().toUpperCase()
+    );
+    String mailBodyHtml = emailTemplateProcessor.processContent(mailBodyMd, replacements); // convert markdown content to html
+
+    JSONObject jsonPayload = new JSONObject();
+    jsonPayload.put("subject", "Welcome to Image Hub! Your Account Has Been Successfully Created");
+    jsonPayload.put("body", mailBodyHtml);
+    jsonPayload.put("receiverEmail", newUserObject.getEmail());
+
+    kafkaTemplate.send("testtopic2", jsonPayload.toJSONString());
+
     return newUserObject;
   }
 

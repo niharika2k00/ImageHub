@@ -15,7 +15,7 @@ public class KafkaProducerService {
   }
 
   public void sendMsgToTopic(String payload) throws Exception {
-    String topicName = "testtopic"; // image-processing-topic
+    String topicName = "testtopic"; // image-processor   email-notification
     System.out.println("kafka producer sends message to topic: " + topicName);
 
     // publish message to a kafka topic 1
