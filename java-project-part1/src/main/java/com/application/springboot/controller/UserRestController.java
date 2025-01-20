@@ -9,6 +9,7 @@ import com.application.springboot.dto.LoginRequestDto;
 import com.application.springboot.dto.PasswordUpdateRequestDto;
 import com.application.springboot.dto.UserLoginResponseDto;
 import com.application.springboot.dto.UserUpdateRequestDto;
+import com.application.springboot.exception.ResourceAlreadyExistsException;
 import com.application.springboot.service.JwtService;
 import com.application.springboot.service.KafkaProducerService;
 import com.application.springboot.service.RoleService;
@@ -76,10 +77,11 @@ public class UserRestController {
   // POST /users/register - SignUp | add new user
   @PostMapping("/users/register")
   public User addNewUser(@RequestBody User user) throws Exception {
-    //User isUserExist = userService.findByEmail(user.getEmail());
-    //if (isUserExist != null) {
-    //  throw new ResourceAlreadyExistsException("Email already exists.");
-    //}
+    // Check: email already exist
+    User isUserExist = userService.findByEmail(user.getEmail());
+    if (isUserExist != null) {
+      throw new ResourceAlreadyExistsException("Email already exists.");
+    }
 
     user.setId(0);
 

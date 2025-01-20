@@ -24,9 +24,6 @@ spring:
   #        password: hello123
   kafka:
     bootstrap-servers: localhost:9093
-    #replica.fetch.max.bytes
-    #message.max.bytes
-
     #    producer:
     #      bootstrap-servers: localhost:9093
     #      key-serializer: org.apache.kafka.common.serialization.StringSerializer
