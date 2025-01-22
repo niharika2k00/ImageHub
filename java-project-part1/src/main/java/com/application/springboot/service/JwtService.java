@@ -15,6 +15,8 @@ import javax.crypto.SecretKey;
 import java.nio.file.AccessDeniedException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -39,7 +41,8 @@ public class JwtService {
   }
 
   public String extractUserEmail(String jwtToken) throws AccessDeniedException {
-    return getClaims(jwtToken).getSubject();
+    Claims claims = getClaims(jwtToken);
+    return claims.getSubject();
   }
 
   private Claims getClaims(String token) throws AccessDeniedException {
@@ -66,5 +69,22 @@ public class JwtService {
       System.out.println("Invalid JWT signature: " + e.getMessage());
       return false;
     }
+  }
+
+  private final Map<String, Long> blacklist = new HashMap<>();
+
+  public void addTokenToBlacklist(String token, long expirationTime) {
+    blacklist.put(token, expirationTime);
+  }
+
+  public boolean isBlacklisted(String token) {
+    Long expirationTime = blacklist.get(token);
+
+    // Remove expired tokens from blacklist
+    if (expirationTime != null && expirationTime < System.currentTimeMillis()) {
+      blacklist.remove(token);
+    }
+
+    return blacklist.containsKey(token);
   }
 }

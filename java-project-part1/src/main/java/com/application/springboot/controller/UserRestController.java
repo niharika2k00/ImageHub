@@ -16,6 +16,7 @@ import com.application.springboot.service.RoleService;
 import com.application.springboot.service.UserUpdateServiceImpl;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
@@ -145,9 +146,17 @@ public class UserRestController {
 
   // POST /users/logout
   @PostMapping("/users/logout")
-  public String logout() {
-    // TODO
-    return "Logout successfully";
+  public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      return ResponseEntity.badRequest().body("Invalid token.");
+    }
+
+    String token = authHeader.substring(7);
+    long expirationTime = jwtService.getExpirationDate().getTime();
+    jwtService.addTokenToBlacklist(token, expirationTime);
+
+    System.out.println("Successfully logged out.");
+    return ResponseEntity.ok("Successfully logged out.");
   }
 
   // PUT /users - update existing user except password

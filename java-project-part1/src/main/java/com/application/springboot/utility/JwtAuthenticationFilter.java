@@ -54,6 +54,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
+      // Check if the token is blacklisted
+      if (jwtService.isBlacklisted(jwtToken)) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Token is invalid or expired"); // HTTP response
+        response.getWriter().close();
+        return;
+      }
+
       // SecurityContextHolder in spring security stores the details of the current authenticated user
       // create a new SecurityContext instance instead of using SecurityContextHolder.getContext().setAuthentication(authentication) to avoid race conditions across multiple threads
       if (!userEmail.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
