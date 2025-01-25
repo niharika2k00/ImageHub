@@ -1,6 +1,7 @@
 package com.application.springboot.service;
 
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +12,8 @@ import java.nio.file.Paths;
 @Service
 public class ImageResizeService {
 
+  @Value("${custom.image-collection-dir}")
+  String imageCollectionDirectory;
   // Predefined popular sizes
   //private final int[][] imageResolutions = {{128, 128}, {512, 512}, {1024, 1024}};
 
@@ -25,7 +28,7 @@ public class ImageResizeService {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     String extension = filePath.contains(".") ? filePath.substring(filePath.lastIndexOf(".") + 1) : "";
 
-    String outputDirectory = "../photoGallery";
+    String outputDirectory = imageCollectionDirectory;
     String outputFileName = outputDirectory + File.separator + extractBaseImageFileName(filePath) + "_resized_" + width + "x" + height + "." + extension;
     File outputFile = new File(outputFileName);
     outputFile.getParentFile().mkdirs(); // create directory if not exists

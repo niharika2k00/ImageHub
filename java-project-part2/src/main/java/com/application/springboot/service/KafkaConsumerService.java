@@ -37,7 +37,7 @@ public class KafkaConsumerService {
     this.emailTemplateProcessor = emailTemplateProcessor;
   }
 
-  @Value("${custom.env.targetImageResolutionCount}")
+  @Value("${custom.target-image-resolution-count}")
   private int targetImageResolutionCount;
 
   @Value("${GROUP_ID}")

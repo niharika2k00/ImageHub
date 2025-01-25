@@ -24,9 +24,9 @@ public class SpringbootApplication {
   public static void main(String[] args) throws NullPointerException {
     System.out.println("Project started 👀...This is kafka consumer");
     SpringApplication.run(SpringbootApplication.class, args);
-    
+
     // the value is assigned at runtime once the springboot application starts
-    String port = env.getProperty("local.server.port");
-    System.out.println("Running in port:" + port);
+    //String port = env.getProperty("local.server.port");
+    //System.out.println("Running in port:" + port);
   }
 }

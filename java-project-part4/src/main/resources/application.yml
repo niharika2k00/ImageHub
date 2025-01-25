@@ -23,3 +23,7 @@ logging:
 
 custom:
   email: "dniharika16@gmail.com"
+
+
+# java -jar -Dspring.config.location=./target/application.yml  ./target/email-service-0.0.1-SNAPSHOT.jar
+# java -jar ./target/email-service-0.0.1-SNAPSHOT.jar --spring.config.location=./target/application.yml

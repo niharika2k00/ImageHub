@@ -3,6 +3,7 @@ package com.application.springboot.controller;
 import com.application.springboot.dto.MediaUploadRequestDto;
 import com.application.springboot.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,9 @@ public class MediaController {
     this.mediaService = mediaService;
   }
 
+  @Value("${custom.source-image-dir}")
+  String sourceImageDirectory;
+
   @PostMapping("/upload/image")
   public String uploadMedia(@ModelAttribute MediaUploadRequestDto reqBody) throws Exception {
     //https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
@@ -37,7 +41,7 @@ public class MediaController {
     if (!imageFile.isEmpty()) {
       Random random = new Random();
       int uuid = 100000 + random.nextInt(900000); // 6-digit unique no
-      String uploadDir = "../images"; // relative path starts from ./javaProject directory
+      String uploadDir = sourceImageDirectory; // relative path starts from ./javaProject directory (at src level)
       Path uploadDirPath = Paths.get(uploadDir);
 
       String fileName = uuid + "_" + imageFile.getOriginalFilename();

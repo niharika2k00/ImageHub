@@ -1,5 +1,7 @@
 server:
   port: 4040
+#  servlet:
+#    context-path: "/api" # base endpoint
 
 spring:
   application:
@@ -17,11 +19,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
-  #    security:
-  #      user: # for endpoint security
-  #        name: Harry
-  #        password: hello123
+  #  security:
+  #    user: # for endpoint security
+  #      name: Harry
+  #      password: hello123
   kafka:
     bootstrap-servers: localhost:9093
     #    producer:
@@ -44,6 +45,8 @@ logging:
   level:
     root: warn # log only warning and error
 
+custom:
+  source-image-dir: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/images"
 
 
-# default username: user with the below generated password
+  # default username: user with the below generated password
