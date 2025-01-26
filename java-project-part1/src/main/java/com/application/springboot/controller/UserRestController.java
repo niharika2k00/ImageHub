@@ -1,5 +1,6 @@
 package com.application.springboot.controller;
 
+import com.application.sharedlibrary.dao.UserRepository;
 import com.application.sharedlibrary.entity.Role;
 import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.exception.CustomResourceNotFoundException;
@@ -41,9 +42,10 @@ public class UserRestController {
   private final UserUpdateServiceImpl userUpdateServiceImpl;
   private final KafkaTemplate<String, String> kafkaTemplate;
   private final EmailTemplateProcessor emailTemplateProcessor;
+  private final UserRepository userRepository;
 
   @Autowired
-  public UserRestController(UserService userService, RoleService roleService, JwtService jwtService, KafkaProducerService kafkaProducerService, UserUpdateServiceImpl userUpdateServiceImpl, KafkaTemplate<String, String> kafkaTemplate, EmailTemplateProcessor emailTemplateProcessor) {
+  public UserRestController(UserService userService, RoleService roleService, JwtService jwtService, KafkaProducerService kafkaProducerService, UserUpdateServiceImpl userUpdateServiceImpl, KafkaTemplate<String, String> kafkaTemplate, EmailTemplateProcessor emailTemplateProcessor, UserRepository userRepository) {
     this.userService = userService;
     this.roleService = roleService;
     this.jwtService = jwtService;
@@ -51,13 +53,12 @@ public class UserRestController {
     this.userUpdateServiceImpl = userUpdateServiceImpl;
     this.kafkaTemplate = kafkaTemplate;
     this.emailTemplateProcessor = emailTemplateProcessor;
+    this.userRepository = userRepository;
   }
 
   // for kafka testing
-  @GetMapping("/sendkafka")
-  public String testKafka(@RequestParam String msg) throws Exception {
-    kafkaProducerService.sendMsgToTopic(msg);
-    //return "msg send successfully";
+  @GetMapping("/test")
+  public String testKafka(@RequestParam("msg") String msg) throws Exception {
     return msg;
   }
 
@@ -79,8 +80,8 @@ public class UserRestController {
   @PostMapping("/users/register")
   public User addNewUser(@RequestBody User user) throws Exception {
     // Check: email already exist
-    User isUserExist = userService.findByEmail(user.getEmail());
-    if (isUserExist != null) {
+    Optional<User> isUserExist = userRepository.findByEmail(user.getEmail());
+    if (isUserExist.isPresent()) {
       throw new ResourceAlreadyExistsException("Email already exists.");
     }
 
