@@ -55,7 +55,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.authorizeHttpRequests(auth -> auth
-      .requestMatchers(HttpMethod.GET, "/", "/api", "/api/sendkafka").permitAll()
+      .requestMatchers(HttpMethod.GET, "/", "/api", "/api/test").permitAll()
       .requestMatchers(HttpMethod.POST, "/api/users/register", "/api/users/login", "/api/users/auth").permitAll()
       .requestMatchers(HttpMethod.POST, "/api/users/logout").authenticated()
 
