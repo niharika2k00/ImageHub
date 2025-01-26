@@ -38,7 +38,7 @@ public class EmailSenderService {
     MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true);
     message.setSubject(subject);
     message.setText(text, true); // enable HTML content
-    message.setTo("niharika.2k00@gmail.com");
+    message.setTo(receiverEmail);
     message.setFrom(senderEmail);
 
     // Working code but only supports TXT, not HTML/MD

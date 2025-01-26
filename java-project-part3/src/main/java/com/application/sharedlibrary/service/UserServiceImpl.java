@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     User userData;
     Optional<User> optionalUser = userRepository.findByEmail(email);
 
-    if (optionalUser.isPresent()) {
+    if (optionalUser.isPresent()) { // user found
       userData = optionalUser.get();
     } else {
       throw new CustomResourceNotFoundException("User with the provided email does not exist.");
