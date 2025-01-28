@@ -27,12 +27,12 @@ public class MediaController {
     this.mediaService = mediaService;
   }
 
-  @Value("${custom.source-image-dir}")
+  @Value("${custom.path.source-image-dir}")
   String sourceImageDirectory;
 
   @PostMapping("/upload/image")
   public String uploadMedia(@ModelAttribute MediaUploadRequestDto reqBody) throws Exception {
-    //https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
+    // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
     // retrieve data from the DTO
     MultipartFile imageFile = reqBody.getImageFile();
     String imageFilePath = "";

@@ -13,7 +13,7 @@
     <groupId>com.application</groupId>
     <artifactId>core-utils</artifactId>
     <version>0.0.1</version>
-    <name>core-library</name>
+    <name>core-utils</name>
     <packaging>jar</packaging>
     <description>Spring Boot Project (common library)</description>
 

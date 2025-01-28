@@ -15,7 +15,7 @@ public class KafkaProducerService {
   }
 
   public void sendMsgToTopic(String payload) throws Exception {
-    String topicName = "testtopic"; // image-processor   email-notification
+    String topicName = "image-processor";
     System.out.println("kafka producer sends message to topic: " + topicName);
 
     // publish message to a kafka topic 1
@@ -24,6 +24,6 @@ public class KafkaProducerService {
 }
 
 // The maximum value of the message that the producer client can send, the default value is 1048576B, 1MB
-//https://kafka.apache.org/11/javadoc/overview-summary.html
-//https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/producer/ProducerConfig.html
+// https://kafka.apache.org/11/javadoc/overview-summary.html
+// https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/producer/ProducerConfig.html
 // https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html

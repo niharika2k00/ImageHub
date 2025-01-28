@@ -4,6 +4,7 @@ import com.application.sharedlibrary.entity.ImageVariant;
 import com.application.sharedlibrary.entity.ImageVariantId;
 import com.application.sharedlibrary.entity.User;
 import com.application.sharedlibrary.service.ImageVariantService;
+import com.application.sharedlibrary.service.ResourceLoaderService;
 import com.application.sharedlibrary.service.UserService;
 import com.application.sharedlibrary.util.EmailTemplateProcessor;
 import org.json.simple.JSONObject;
@@ -14,9 +15,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 @Service
@@ -27,18 +25,22 @@ public class KafkaConsumerService {
   private final KafkaTemplate<String, String> kafkaTemplate;
   private final UserService userService;
   private final EmailTemplateProcessor emailTemplateProcessor;
+  private final ResourceLoaderService resourceLoaderService;
 
   @Autowired
-  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService, KafkaTemplate<String, String> kafkaTemplate, UserService userService, EmailTemplateProcessor emailTemplateProcessor) {
+  public KafkaConsumerService(ImageResizeService imageResizeService, ImageVariantService imageVariantService,
+                              KafkaTemplate<String, String> kafkaTemplate, UserService userService,
+                              EmailTemplateProcessor emailTemplateProcessor, ResourceLoaderService resourceLoaderService) {
     this.imageResizeService = imageResizeService;
     this.imageVariantService = imageVariantService;
     this.kafkaTemplate = kafkaTemplate;
     this.userService = userService;
     this.emailTemplateProcessor = emailTemplateProcessor;
+    this.resourceLoaderService = resourceLoaderService;
   }
 
-  @Value("${custom.target-image-resolution-count}")
-  private int targetImageResolutionCount;
+  @Value("${custom.target-resolution-count}")
+  private int targetResolutionCount;
 
   @Value("${GROUP_ID}")
   private String kafkaConsumerGroupId;
@@ -52,18 +54,19 @@ public class KafkaConsumerService {
   // Here a single Kafka topic is configured with 3 consumer groups (passed in the ENV), each containing multiple(x) consumers. Each group is responsible for handling a specific image resolution for resizing.
 
   // Listener with 2 consumer that handle 128 | 512 | 1024 px image resolution
-  // @ConditionalOnProperty annotation helps to enable/disable listeners based on the value of environment variable dynamically https://docs.spring.io/spring-boot/api/java/org/springframework/boot/autoconfigure/condition/ConditionalOnProperty.html
+  // @ConditionalOnProperty annotation helps to enable/disable listeners based on the value of environment variable dynamically
+  // https://docs.spring.io/spring-boot/api/java/org/springframework/boot/autoconfigure/condition/ConditionalOnProperty.html
   // @ConditionalOnProperty(name = "${GROUP_ID}", havingValue = "group1")
-  @KafkaListener(topics = "testtopic", groupId = "${GROUP_ID}", concurrency = "2")
+  @KafkaListener(topics = "image-processor", groupId = "${GROUP_ID}", concurrency = "2")
   public void listenToTopic(String payload) throws Exception {
-    //String targetWidth = System.getProperty("WIDTH"); // variables from VM options
-    //String targetWidth = System.getenv("WIDTH"); // env variables are operating-system-level key/value pairs set globally outside of JVM. In IntelliJ these are set in the environment variable section in edit configuration
+    // String targetWidth = System.getProperty("WIDTH"); // variables from VM options
+    // String targetWidth = System.getenv("WIDTH"); // env variables are operating-system-level key/value pairs set globally outside of JVM. In IntelliJ these are set in the environment variable section in edit configuration
 
     // parse JSON string to JSON object
     JSONParser parser = new JSONParser();
     JSONObject jsonObj = (JSONObject) parser.parse(payload);
 
-    int imageId = ((Number) jsonObj.get("id")).intValue(); // while storing(put) int is autoboxed into an Integer. And JSONObject treats int as long so need to cast to int
+    int imageId = ((Number) jsonObj.get("id")).intValue(); // while storing(put) int is autoboxed into an Integer. And JSONObject treats int as long,so need to recast to int
     int authenticatedUserId = ((Number) jsonObj.get("authenticatedUserId")).intValue();
     String filePath = (String) jsonObj.get("originalImagePath");
     String message = (String) jsonObj.get("message");
@@ -72,21 +75,19 @@ public class KafkaConsumerService {
     helper(filePath, imageId);
 
     int liveCount = imageVariantService.getCountByImageId(imageId); // fetch number of rows with base id
-    System.out.println(liveCount + getSuffix(liveCount) + " image successfylly generated.");
+    System.out.println(liveCount + getSuffix(liveCount) + " image successfully generated.");
 
     // Check if all x resolutions are processed and stored
-    if (liveCount == targetImageResolutionCount) {
+    if (liveCount == targetResolutionCount) {
       User authenticatedUser = new User();
       authenticatedUser = userService.findById(authenticatedUserId);
-
-      Path path = Paths.get("./image_processed_email.md");
-      String mailBodyMd = Files.readString(path);
 
       // Mapping placeholders for replacement
       Map<String, String> replacements = Map.of(
         "{{username}}", authenticatedUser.getName().toUpperCase()
       );
 
+      String mailBodyMd = resourceLoaderService.readFileFromResources("image_process_success_email.md");
       String mailBodyHtml = emailTemplateProcessor.processContent(mailBodyMd, replacements);
 
       JSONObject jsonPayload = new JSONObject();

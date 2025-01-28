@@ -10,6 +10,7 @@
         <module name="core-utils" />
         <module name="springboot" />
         <module name="kafka-consumer" />
+        <module name="pixprocessor-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -17,6 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="core-utils" options="-parameters" />
       <module name="kafka-consumer" options="-parameters" />
+      <module name="pixprocessor-service" options="-parameters" />
       <module name="springboot" options="-parameters" />
     </option>
   </component>

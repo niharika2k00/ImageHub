@@ -42,11 +42,11 @@ public class EmailSenderService {
     message.setFrom(senderEmail);
 
     // Working code but only supports TXT, not HTML/MD
-    //SimpleMailMessage message = new SimpleMailMessage();
-    //message.setSubject(subject);
-    //message.setText(text);
-    //message.setTo(receiverEmail);
-    //message.setFrom(senderEmail);
+    // SimpleMailMessage message = new SimpleMailMessage();
+    // message.setSubject(subject);
+    // message.setText(text);
+    // message.setTo(receiverEmail);
+    // message.setFrom(senderEmail);
 
     javaMailSender.send(mimeMessage);
   }

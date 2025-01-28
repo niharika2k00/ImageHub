@@ -46,7 +46,9 @@ logging:
     root: warn # log only warning and error
 
 custom:
-  source-image-dir: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/images"
+  path:
+    source-image-dir: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/images"
+    welcome-email-template: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/java-project-part1/user_welcome_email.md"
 
-
+  # welcomeEmailTemplate  imageProcessSuccessEmailTemplate
   # default username: user with the below generated password

@@ -12,16 +12,16 @@ import java.nio.file.Paths;
 @Service
 public class ImageResizeService {
 
-  @Value("${custom.image-collection-dir}")
+  @Value("${custom.path.image-collection-dir}")
   String imageCollectionDirectory;
   // Predefined popular sizes
-  //private final int[][] imageResolutions = {{128, 128}, {512, 512}, {1024, 1024}};
+  // private final int[][] imageResolutions = {{128, 128}, {512, 512}, {1024, 1024}};
 
   /*
    Why not passing byte[] of image from controller -> kafka producer -> consumer -> service ????
    - Performance: smaller Kafka messages reduce latency and resource usage
    - Decoupling: file path ensures that the producer and consumer services are loosely coupled and do not depend on transferring heavy payloads
-  */
+   */
 
   // byte[] imageBytes
   public String generateResizedImage(String filePath, int width, int height) throws Exception {
@@ -33,14 +33,14 @@ public class ImageResizeService {
     File outputFile = new File(outputFileName);
     outputFile.getParentFile().mkdirs(); // create directory if not exists
 
-    //save resized image to file
+    // save resized image to file
     Thumbnails.of(filePath)
       .size(width, height)
       .outputFormat(extension)
       .outputQuality(1)
       .toFile(outputFile);
 
-    //generate resized image byte array
+    // generate resized image byte array
     Thumbnails.of(filePath) // OR Thumbnails.of(Arrays.toString(originalImageBytes))
       .size(width, height)
       .outputFormat(extension)
