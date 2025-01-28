@@ -97,7 +97,7 @@ public class KafkaConsumerService {
 
       // producer publishes message to a kafka topic 2 for sending emails
       System.out.println("Message published to 2nd topic...Sending mail...");
-      kafkaTemplate.send("testtopic2", jsonPayload.toJSONString());
+      kafkaTemplate.send("email-notification", jsonPayload.toJSONString());
     }
   }
 
