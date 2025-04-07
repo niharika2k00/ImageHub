@@ -11,14 +11,17 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: "jdbc:mysql://localhost:3306/imagehub" # JDBC URL of the database
+    url: "jdbc:mysql://localhost:3306/imagehub" # "jdbc:mysql://3.140.188.132:3306/imagehub" JDBC URL of the database
     username: "root" # username and password for Database
     password: "niharika"
   jpa:
     hibernate:
       ddl-auto: update
   kafka:
-    bootstrap-servers: localhost:9093
+    bootstrap-servers: localhost:9093 # 3.140.188.132:9093
+  devtools:
+    livereload:
+      enabled: false
 
 # Reduce logging level
 logging:
@@ -31,5 +34,8 @@ custom:
   path:
     process-success-email-template: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/java-project-part2/image_process_success_email.md"
     image-collection-dir: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/photoGallery"
+# ----- reference for deployment -----
+#    process-success-email-template: "/home/ubuntu/javaproject/part2/image_process_success_email.md"
+#    image-collection-dir: "/home/ubuntu/javaproject/photoGallery"
 
 # java -jar -DHEIGHT=128 -DWIDTH=128 -DGROUP_ID=group1 ./target/pixprocessor-service-0.0.1-SNAPSHOT.jar

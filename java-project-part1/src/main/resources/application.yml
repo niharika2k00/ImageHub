@@ -13,7 +13,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: "jdbc:mysql://localhost:3306/imagehub" # JDBC URL of the database
+    url: "jdbc:mysql://localhost:3306/imagehub" # "jdbc:mysql://3.140.188.132:3306/imagehub" JDBC URL of the database
     username: "root" # username and password for Database
     password: "niharika"
   jpa:
@@ -24,7 +24,7 @@ spring:
   #      name: Harry
   #      password: hello123
   kafka:
-    bootstrap-servers: localhost:9093
+    bootstrap-servers: localhost:9093 # 3.140.188.132:9093
     #    producer:
     #      bootstrap-servers: localhost:9093
     #      key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -49,6 +49,9 @@ custom:
   path:
     source-image-dir: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/images"
     welcome-email-template: "/Users/niharika/Workspace/Personal/IntellijProjects/Project ImageHub/java-project-part1/user_welcome_email.md"
+  # ----- reference for deployment -----
+  #    source-image-dir: "/home/ubuntu/javaproject/images"
+  #    welcome-email-template: "/home/ubuntu/javaproject/part1/user_welcome_email.md"
 
   # welcomeEmailTemplate  imageProcessSuccessEmailTemplate
   # default username: user with the below generated password

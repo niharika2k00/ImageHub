@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: update
   kafka:
-    bootstrap-servers: localhost:9093
+    bootstrap-servers: localhost:9093 # 3.140.188.132:9093
 
 # Reduce logging level
 logging:

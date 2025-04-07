@@ -30,6 +30,8 @@ public class KafkaConsumerConfig {
     config.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "20000000");
     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    config.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "20000000");
+    config.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "20000000");
     //config.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
 
     return new DefaultKafkaConsumerFactory<>(config);
